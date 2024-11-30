@@ -18,11 +18,13 @@ public class RepositorioDePedidoJPA implements
     private final PedidoRepository repository;
     private final PedidoMapper pedidoMapper;
     private final RepositorioDePedidoHTTP repositorioDePedidoHTTP;
+    private final RepositorioDePedidoCloudStream repositorioDePedidoCloudStream;
 
-    public RepositorioDePedidoJPA(PedidoRepository repository, PedidoMapper pedidoMapper, RepositorioDePedidoHTTP repositorioDePedidoHTTP) {
+    public RepositorioDePedidoJPA(PedidoRepository repository, PedidoMapper pedidoMapper, RepositorioDePedidoHTTP repositorioDePedidoHTTP, RepositorioDePedidoCloudStream repositorioDePedidoCloudStream) {
         this.repository = repository;
         this.pedidoMapper = pedidoMapper;
         this.repositorioDePedidoHTTP = repositorioDePedidoHTTP;
+        this.repositorioDePedidoCloudStream = repositorioDePedidoCloudStream;
     }
 
     @Override
@@ -40,9 +42,11 @@ public class RepositorioDePedidoJPA implements
 
     @Override
     public Pedido fazerPedido(List<ProdutoPedido> idProdutos, Long idCliente, Long idEndereco) {
-        if (repositorioDePedidoHTTP.checarProdutos(idProdutos)){
+        if (repositorioDePedidoHTTP.checarProdutos(idProdutos)
+        && repositorioDePedidoHTTP.validarEndereco(idEndereco)
+        && repositorioDePedidoHTTP.validarCliente(idCliente)){
             Pedido pedido = new Pedido("Criado", idCliente, idProdutos, idEndereco);
-            repositorioDePedidoHTTP.venderProdutos(idProdutos);
+            repositorioDePedidoCloudStream.venderProdutos(idProdutos);
             if(repositorioDePedidoHTTP.enviarParaEntrega(pedido)) {
                 return pedidoMapper.toDomain(repository.save(pedidoMapper.toEntity(pedido)));
             }else {

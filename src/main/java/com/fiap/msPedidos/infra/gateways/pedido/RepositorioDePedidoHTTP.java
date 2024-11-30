@@ -3,12 +3,11 @@ package com.fiap.msPedidos.infra.gateways.pedido;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fiap.msPedidos.app.gateways.pedidos.ChecarProdutosInterface;
 import com.fiap.msPedidos.app.gateways.pedidos.EnviarParaEntregaInterface;
-import com.fiap.msPedidos.app.gateways.pedidos.VenderProdutosInterface;
+import com.fiap.msPedidos.app.gateways.pedidos.ValidarClienteInterface;
+import com.fiap.msPedidos.app.gateways.pedidos.ValidarEnderecoInterface;
 import com.fiap.msPedidos.domain.entity.Pedido;
 import com.fiap.msPedidos.domain.entity.ProdutoPedido;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -19,7 +18,8 @@ import java.util.NoSuchElementException;
 public class RepositorioDePedidoHTTP implements
         ChecarProdutosInterface,
         EnviarParaEntregaInterface,
-        VenderProdutosInterface {
+        ValidarClienteInterface,
+        ValidarEnderecoInterface {
 
     private RestTemplate restTemplate;
     private ObjectMapper objectMapper;
@@ -42,8 +42,26 @@ public class RepositorioDePedidoHTTP implements
     @Value("${entrega.PORT}")
     private String entregaPORT;
 
-    @Value("${entrega.ENDPOINT}")
+    @Value("${entrega.receber.ENDPOINT}")
     private String entregaEndpoint;
+
+    @Value("${endereco.URI}")
+    private String enderecoURI;
+
+    @Value("${endereco.PORT}")
+    private String enderecoPORT;
+
+    @Value("${endereco.consultar.ENDPOINT}")
+    private String enderecoENDPOINT;
+
+    @Value("${cliente.URI}")
+    private String clienteURI;
+
+    @Value("${cliente.PORT}")
+    private String clientePORT;
+
+    @Value("${cliente.consultar.ENDPOINT}")
+    private String clienteENDPOINT;
 
     public RepositorioDePedidoHTTP(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
@@ -77,6 +95,8 @@ public class RepositorioDePedidoHTTP implements
 
     @Override
     public Boolean enviarParaEntrega(Pedido pedido) {
+
+        //TODO: not yet implemented
 //        try {
 //            ResponseEntity<Boolean> response = restTemplate.postForEntity(
 //                    produtosURI + produtosPort + consultarProdutosEndpoint,
@@ -100,25 +120,42 @@ public class RepositorioDePedidoHTTP implements
     }
 
     @Override
-    public void venderProdutos(List<ProdutoPedido> produtos) {
-        for (ProdutoPedido produto : produtos) {
-            Long id = produto.getId();
-            int quantidade = produto.getQuantidade();
-
-            try {
-                restTemplate.exchange(
-                        produtosURI + produtosPort + venderProdutosEndpoint,
-                        HttpMethod.PUT,
-                        null,
-                        Void.class,
-                        id,
-                        quantidade
-                );
-            } catch (HttpClientErrorException.NotFound e) {
-                throw new NoSuchElementException("Produto não encontrado no microsserviço");
-            } catch (Exception e) {
-                throw new RuntimeException("Erro na comunicação entre microsserviços", e);
+    public Boolean validarCliente(Long id) {
+        try {
+            ResponseEntity<Boolean> response = restTemplate.getForEntity(
+                    clienteURI +  clientePORT + clienteENDPOINT,
+                    Boolean.class,
+                    id
+            );
+            if (Boolean.FALSE.equals(response.getBody())) {
+                return false;
             }
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new NoSuchElementException("Cliente não encontrado");
+        } catch (Exception e) {
+            throw new RuntimeException("Erro na comunicação entre microsserviços", e);
         }
+        return true;
     }
+
+    @Override
+    public Boolean validarEndereco(Long id) {
+        try {
+            ResponseEntity<Boolean> response = restTemplate.getForEntity(
+                    enderecoURI +  enderecoPORT + enderecoENDPOINT,
+                    Boolean.class,
+                    id
+            );
+            if (Boolean.FALSE.equals(response.getBody())) {
+                return false;
+            }
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new NoSuchElementException("Produto não encontrado no microsserviço");
+        } catch (Exception e) {
+            throw new RuntimeException("Erro na comunicação entre microsserviços", e);
+        }
+        return true;
+    }
+
+
 }

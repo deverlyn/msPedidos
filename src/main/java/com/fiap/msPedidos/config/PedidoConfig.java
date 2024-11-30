@@ -4,13 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fiap.msPedidos.app.gateways.pedidos.*;
 import com.fiap.msPedidos.app.usecases.pedidos.*;
 import com.fiap.msPedidos.infra.gateways.pedido.PedidoMapper;
+import com.fiap.msPedidos.infra.gateways.pedido.RepositorioDePedidoCloudStream;
 import com.fiap.msPedidos.infra.gateways.pedido.RepositorioDePedidoHTTP;
 import com.fiap.msPedidos.infra.gateways.pedido.RepositorioDePedidoJPA;
 import com.fiap.msPedidos.infra.gateways.produto.ProdutoPedidoMapper;
 import com.fiap.msPedidos.infra.persistence.pedido.PedidoRepository;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.integration.channel.DirectChannel;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
@@ -42,13 +46,23 @@ public class PedidoConfig {
     }
 
     @Bean
+    ValidarCliente validarCliente(ValidarClienteInterface validarClienteInterface){
+        return new ValidarCliente(validarClienteInterface);
+    }
+
+    @Bean
+    ValidarEndereco validarEndereco(ValidarEnderecoInterface validarEnderecoInterface){
+        return new ValidarEndereco(validarEnderecoInterface);
+    }
+
+    @Bean
     VenderProdutos venderProdutos(VenderProdutosInterface venderProdutosInterface){
         return new VenderProdutos(venderProdutosInterface);
     }
 
     @Bean
-    RepositorioDePedidoJPA repositorioDePedidoJPA(PedidoRepository repositorio, PedidoMapper pedidoMapper, RepositorioDePedidoHTTP http){
-        return new RepositorioDePedidoJPA(repositorio, pedidoMapper, http);
+    RepositorioDePedidoJPA repositorioDePedidoJPA(PedidoRepository repositorio, PedidoMapper pedidoMapper, RepositorioDePedidoHTTP http, RepositorioDePedidoCloudStream repositorioDePedidoCloudStream){
+        return new RepositorioDePedidoJPA(repositorio, pedidoMapper, http, repositorioDePedidoCloudStream);
     }
 
     @Bean
@@ -66,6 +80,7 @@ public class PedidoConfig {
         return new RepositorioDePedidoHTTP(restTemplate, objectMapper);
     }
 
+
     @Bean
     RestTemplate restTemplate(){
         RestTemplate restTemplate = new RestTemplate();
@@ -79,4 +94,5 @@ public class PedidoConfig {
     ObjectMapper objectMapper(){
         return new ObjectMapper();
     }
+
 }
