@@ -13,7 +13,11 @@ public class ChecarProdutos {
         this.checarProdutosInterface = checarProdutosInterface;
     }
 
-    public boolean checarProdutos(List<ProdutoPedido> produtos){
+    public boolean checarProdutos(List<ProdutoPedido> produtos) {
+
+        if (produtos == null || produtos.isEmpty()) {
+            return false;
+        }
         return checarProdutosInterface.checarProdutos(produtos);
     }
 }

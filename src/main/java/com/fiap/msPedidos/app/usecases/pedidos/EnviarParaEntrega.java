@@ -12,6 +12,10 @@ public class EnviarParaEntrega {
     }
 
     public Boolean enviarParaEntrega(Pedido pedido) {
+
+       if(pedido == null){
+           return false;
+       }
         return enviarParaEntregaInterface.enviarParaEntrega(pedido);
     }
 }

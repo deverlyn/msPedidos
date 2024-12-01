@@ -11,6 +11,9 @@ public class ValidarCliente {
     }
 
     public Boolean validarCliente(Long id){
+        if(id == null){
+            return false;
+        }
         return validarClienteInterface.validarCliente(id);
     }
 }

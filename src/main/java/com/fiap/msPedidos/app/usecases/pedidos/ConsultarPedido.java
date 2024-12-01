@@ -12,6 +12,9 @@ public class ConsultarPedido {
     }
 
     public Pedido consultarPedido(Long id) {
+        if(id == null){
+            return null;
+        }
         return consultarPedidoInterface.consultarPedido(id);
     }
 }

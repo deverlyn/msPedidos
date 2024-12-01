@@ -15,6 +15,9 @@ public class FazerPedido {
     }
 
     public Pedido fazerPedido(List<ProdutoPedido> produtoPedido, Long idCliente, Long idEndereco) {
+       if(produtoPedido == null){
+           return null;
+       }
         return fazerPedidoInterface.fazerPedido(produtoPedido, idCliente, idEndereco);
     }
 }

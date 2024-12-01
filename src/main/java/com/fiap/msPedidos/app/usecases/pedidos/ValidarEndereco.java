@@ -11,6 +11,9 @@ public class ValidarEndereco {
     }
 
     public Boolean validarEndereco(Long id){
+        if(id == null){
+            return false;
+        }
         return validarEndereco.validarEndereco(id);
     }
 }

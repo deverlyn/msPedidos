@@ -11,6 +11,9 @@ public class AtualizarPedido {
     }
 
     public void atualizarPedido(Long idPedido, String status) {
+        if (idPedido == null || status == null) {
+            return;
+        }
         atualizarPedidoInterface.atualizarPedido(idPedido, status);
     }
 }

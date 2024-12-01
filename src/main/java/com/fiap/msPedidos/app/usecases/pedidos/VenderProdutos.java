@@ -14,6 +14,9 @@ public class VenderProdutos {
     }
 
     public void venderProdutos(List<ProdutoPedido> produtos) {
+        if(produtos == null){
+            return;
+        }
         venderProdutosInterface.venderProdutos(produtos);
     }
 }
