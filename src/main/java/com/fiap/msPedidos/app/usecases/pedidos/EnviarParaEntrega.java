@@ -2,6 +2,7 @@ package com.fiap.msPedidos.app.usecases.pedidos;
 
 import com.fiap.msPedidos.app.gateways.pedidos.EnviarParaEntregaInterface;
 import com.fiap.msPedidos.domain.entity.Pedido;
+import com.fiap.msPedidos.infra.controller.pedido.EntregaDTO;
 
 public class EnviarParaEntrega {
 
@@ -11,11 +12,11 @@ public class EnviarParaEntrega {
         this.enviarParaEntregaInterface = enviarParaEntregaInterface;
     }
 
-    public Boolean enviarParaEntrega(Pedido pedido) {
+    public EntregaDTO enviarParaEntrega(Long idPedido) {
 
-       if(pedido == null){
-           return false;
+       if(idPedido == null){
+           return null;
        }
-        return enviarParaEntregaInterface.enviarParaEntrega(pedido);
+        return enviarParaEntregaInterface.enviarParaEntrega(idPedido);
     }
 }

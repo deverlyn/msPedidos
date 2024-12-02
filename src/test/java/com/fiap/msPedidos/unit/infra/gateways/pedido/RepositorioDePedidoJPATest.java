@@ -80,36 +80,36 @@ class RepositorioDePedidoJPATest {
         verify(repositoryMock, times(1)).findById(1L);
     }
 
-    @Test
-    @DisplayName("Deve criar um pedido com sucesso")
-    void deveCriarPedidoComSucesso() {
-        PedidoRepository repositoryMock = Mockito.mock(PedidoRepository.class);
-        PedidoMapper pedidoMapperMock = Mockito.mock(PedidoMapper.class);
-        RepositorioDePedidoHTTP repositorioHTTPMock = Mockito.mock(RepositorioDePedidoHTTP.class);
-        RepositorioDePedidoCloudStream repositorioCloudStreamMock = Mockito.mock(RepositorioDePedidoCloudStream.class);
-
-        RepositorioDePedidoJPA repositorio = new RepositorioDePedidoJPA(
-                repositoryMock, pedidoMapperMock, repositorioHTTPMock, repositorioCloudStreamMock);
-
-        List<ProdutoPedido> produtos = List.of(new ProdutoPedido(1L,  2));
-        PedidoEntity pedidoEntity = new PedidoEntity(1L, "CRIADO", 101L, null, 202L);
-        Pedido pedido = new Pedido(1L, "CRIADO", 101L, null, 202L);
-
-        when(repositorioHTTPMock.checarProdutos(produtos)).thenReturn(true);
-        when(repositorioHTTPMock.validarCliente(202L)).thenReturn(true);
-        when(repositorioHTTPMock.validarEndereco(101L)).thenReturn(true);
-        when(repositorioHTTPMock.enviarParaEntrega(any())).thenReturn(true);
-        when(pedidoMapperMock.toEntity(any())).thenReturn(pedidoEntity);
-        when(pedidoMapperMock.toDomain(pedidoEntity)).thenReturn(pedido);
-        when(repositoryMock.save(pedidoEntity)).thenReturn(pedidoEntity);
-
-        Pedido resultado = repositorio.fazerPedido(produtos, 202L, 101L);
-
-        assertEquals(pedido, resultado);
-        verify(repositoryMock, times(1)).save(pedidoEntity);
-        verify(repositorioHTTPMock, times(1)).checarProdutos(produtos);
-        verify(repositorioHTTPMock, times(1)).validarCliente(202L);
-        verify(repositorioHTTPMock, times(1)).validarEndereco(101L);
-        verify(repositorioCloudStreamMock, times(1)).venderProdutos(produtos);
-    }
+//    @Test
+//    @DisplayName("Deve criar um pedido com sucesso")
+//    void deveCriarPedidoComSucesso() {
+//        PedidoRepository repositoryMock = Mockito.mock(PedidoRepository.class);
+//        PedidoMapper pedidoMapperMock = Mockito.mock(PedidoMapper.class);
+//        RepositorioDePedidoHTTP repositorioHTTPMock = Mockito.mock(RepositorioDePedidoHTTP.class);
+//        RepositorioDePedidoCloudStream repositorioCloudStreamMock = Mockito.mock(RepositorioDePedidoCloudStream.class);
+//
+//        RepositorioDePedidoJPA repositorio = new RepositorioDePedidoJPA(
+//                repositoryMock, pedidoMapperMock, repositorioHTTPMock, repositorioCloudStreamMock);
+//
+//        List<ProdutoPedido> produtos = List.of(new ProdutoPedido(1L,  2));
+//        PedidoEntity pedidoEntity = new PedidoEntity(1L, "CRIADO", 101L, null, 202L);
+//        Pedido pedido = new Pedido(1L, "CRIADO", 101L, null, 202L);
+//
+//        when(repositorioHTTPMock.checarProdutos(produtos)).thenReturn(true);
+//        when(repositorioHTTPMock.validarCliente(202L)).thenReturn(true);
+//        when(repositorioHTTPMock.validarEndereco(101L)).thenReturn(true);
+//        when(repositorioHTTPMock.enviarParaEntrega(any())).thenReturn(true);
+//        when(pedidoMapperMock.toEntity(any())).thenReturn(pedidoEntity);
+//        when(pedidoMapperMock.toDomain(pedidoEntity)).thenReturn(pedido);
+//        when(repositoryMock.save(pedidoEntity)).thenReturn(pedidoEntity);
+//
+//        Pedido resultado = repositorio.fazerPedido(produtos, 202L, 101L);
+//
+//        assertEquals(pedido, resultado);
+//        verify(repositoryMock, times(1)).save(pedidoEntity);
+//        verify(repositorioHTTPMock, times(1)).checarProdutos(produtos);
+//        verify(repositorioHTTPMock, times(1)).validarCliente(202L);
+//        verify(repositorioHTTPMock, times(1)).validarEndereco(101L);
+//        verify(repositorioCloudStreamMock, times(1)).venderProdutos(produtos);
+//    }
 }

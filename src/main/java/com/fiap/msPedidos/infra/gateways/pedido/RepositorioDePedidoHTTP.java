@@ -7,7 +7,9 @@ import com.fiap.msPedidos.app.gateways.pedidos.ValidarClienteInterface;
 import com.fiap.msPedidos.app.gateways.pedidos.ValidarEnderecoInterface;
 import com.fiap.msPedidos.domain.entity.Pedido;
 import com.fiap.msPedidos.domain.entity.ProdutoPedido;
+import com.fiap.msPedidos.infra.controller.pedido.EntregaDTO;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -17,7 +19,6 @@ import java.util.NoSuchElementException;
 
 public class RepositorioDePedidoHTTP implements
         ChecarProdutosInterface,
-        EnviarParaEntregaInterface,
         ValidarClienteInterface,
         ValidarEnderecoInterface {
 
@@ -38,12 +39,6 @@ public class RepositorioDePedidoHTTP implements
 
     @Value("${entrega.URI}")
     private String entregaURI;
-
-    @Value("${entrega.PORT}")
-    private String entregaPORT;
-
-    @Value("${entrega.receber.ENDPOINT}")
-    private String entregaEndpoint;
 
     @Value("${endereco.URI}")
     private String enderecoURI;
@@ -93,30 +88,28 @@ public class RepositorioDePedidoHTTP implements
         return true;
     }
 
-    @Override
-    public Boolean enviarParaEntrega(Pedido pedido) {
+    public EntregaDTO enviarParaEntrega(Pedido pedido) {
 
-        //TODO: not yet implemented
-//        try {
-//            ResponseEntity<Boolean> response = restTemplate.postForEntity(
-//                    produtosURI + produtosPort + consultarProdutosEndpoint,
-//                    pedido,
-//                    Boolean.class
-//            );
-//
-//            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-//                return response.getBody();
-//            } else {
-//                throw new RuntimeException("Resposta inválida do microsserviço");
-//            }
-//        } catch (
-//                HttpClientErrorException.NotFound e) {
-//            throw new NoSuchElementException("Endpoint não encontrado no microsserviço", e);
-//        } catch (
-//                Exception e) {
-//            throw new RuntimeException("Erro na comunicação entre microsserviços", e);
-//        }
-        return true;
+        EntregaDTO entrega = new EntregaDTO(null, null, null, pedido.getId(), pedido.getCliente(), pedido.getEnderecoEntrega());
+        try {
+            ResponseEntity<EntregaDTO> response = restTemplate.postForEntity(
+                    entregaURI,
+                    entrega,
+                    EntregaDTO.class
+            );
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                return response.getBody();
+            } else {
+                throw new RuntimeException("Não pudemos enviar para entrega");
+            }
+        } catch (
+                HttpClientErrorException.NotFound e) {
+            throw new NoSuchElementException("Endpoint não encontrado no microsserviço", e);
+        } catch (
+                Exception e) {
+            throw new RuntimeException("Erro na comunicação entre microsserviços", e);
+        }
     }
 
     @Override

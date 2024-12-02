@@ -1,7 +1,7 @@
 package com.fiap.msPedidos.app.gateways.pedidos;
 
-import com.fiap.msPedidos.domain.entity.Pedido;
+import com.fiap.msPedidos.infra.controller.pedido.EntregaDTO;
 
 public interface EnviarParaEntregaInterface {
-    Boolean enviarParaEntrega(Pedido pedido);
+    EntregaDTO enviarParaEntrega(Long idPedido);
 }

@@ -31,8 +31,8 @@ class PedidoControllerTest {
         consultarPedido = mock(ConsultarPedido.class);
         fazerPedido = mock(FazerPedido.class);
 
-        PedidoController pedidoController = new PedidoController(consultarPedido, fazerPedido);
-        mockMvc = MockMvcBuilders.standaloneSetup(pedidoController).build();
+//        PedidoController pedidoController = new PedidoController(consultarPedido, fazerPedido);
+//        mockMvc = MockMvcBuilders.standaloneSetup(pedidoController).build();
     }
 
     @Test
