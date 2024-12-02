@@ -3,7 +3,9 @@ package com.fiap.msPedidos.infra.controller.pedido;
 import com.fiap.msPedidos.app.usecases.pedidos.ConsultarPedido;
 import com.fiap.msPedidos.app.usecases.pedidos.FazerPedido;
 import com.fiap.msPedidos.domain.entity.Pedido;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -20,6 +22,9 @@ public class PedidoController {
     @GetMapping("/{id}")
     public PedidoDTO consultarPedido(@PathVariable Long id) {
         Pedido pedido = consultarPedido.consultarPedido(id);
+        if(pedido == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado");
+        }
         return new PedidoDTO(pedido.getId(),
                 pedido.getStatus(),
                 pedido.getEnderecoEntrega(),

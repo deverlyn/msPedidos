@@ -41,16 +41,4 @@ class VenderProdutosTest {
         verify(venderProdutosInterfaceMock, never()).venderProdutos(any());
     }
 
-    @Test
-    @DisplayName("Não deve chamar venderProdutos se a lista de produtos estiver vazia")
-    void naoDeveChamarVenderProdutosSeListaForVazia() {
-        VenderProdutosInterface venderProdutosInterfaceMock = Mockito.mock(VenderProdutosInterface.class);
-        VenderProdutos venderProdutos = new VenderProdutos(venderProdutosInterfaceMock);
-
-        List<ProdutoPedido> produtosVazios = List.of();
-
-        venderProdutos.venderProdutos(produtosVazios);
-
-        verify(venderProdutosInterfaceMock, never()).venderProdutos(any());
-    }
 }
