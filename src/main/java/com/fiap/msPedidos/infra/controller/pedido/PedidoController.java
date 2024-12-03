@@ -64,9 +64,5 @@ public class PedidoController {
                 pedido.getProdutos(),
                 pedido.getCliente());
     }
-
-    @PostMapping("/enviar")
-    public EntregaDTO enviarParaEntrega(@RequestParam Long idPedido){
-        return enviarParaEntrega.enviarParaEntrega(idPedido);
-    }
+    
 }
