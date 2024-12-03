@@ -63,4 +63,21 @@ class ConsultarPedidoTest {
         assertNull(resultado);
         verify(consultarPedidoInterfaceMock, never()).consultarPedido(any());
     }
+    @Test
+    @DisplayName("Deve retornar todos os pedidos")
+    void deveRetornarTodosOsPedidos() {
+        ConsultarPedidoInterface consultarPedidoInterfaceMock = Mockito.mock(ConsultarPedidoInterface.class);
+        ConsultarPedido consultarPedido = new ConsultarPedido(consultarPedidoInterfaceMock);
+
+        Pedido pedido1 = new Pedido("CRIADO", 101L, List.of(new ProdutoPedido(1L, 2)), 202L);
+        Pedido pedido2 = new Pedido("ENVIADO", 102L, List.of(new ProdutoPedido(2L, 3)), 203L);
+        List<Pedido> pedidosMock = List.of(pedido1, pedido2);
+
+        when(consultarPedidoInterfaceMock.consultarTodosPedidos()).thenReturn(pedidosMock);
+
+        List<Pedido> resultado = consultarPedido.consultarTodosPedidos();
+
+        assertEquals(pedidosMock, resultado);
+        verify(consultarPedidoInterfaceMock, times(1)).consultarTodosPedidos();
+    }
 }

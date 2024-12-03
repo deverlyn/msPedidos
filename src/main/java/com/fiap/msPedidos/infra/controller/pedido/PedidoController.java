@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/pedidos")
 @Tag(name = "Pedidos", description = "Endpoints para gerenciamento de pedidos")
@@ -37,6 +40,18 @@ public class PedidoController {
                 pedido.getEnderecoEntrega(),
                 pedido.getProdutos(),
                 pedido.getCliente());
+    }
+    @GetMapping
+    @Operation(summary = "Consultar todos os pedidos", description = "Consulta todos os pedidos.")
+    public List<PedidoDTO> getAllPedidos() {
+        List<Pedido> pedidos = consultarPedido.consultarTodosPedidos();
+        return pedidos.stream()
+                .map(pedido -> new PedidoDTO(pedido.getId(),
+                        pedido.getStatus(),
+                        pedido.getEnderecoEntrega(),
+                        pedido.getProdutos(),
+                        pedido.getCliente()))
+                .collect(Collectors.toList());
     }
 
     @PostMapping

@@ -12,6 +12,7 @@ import com.fiap.msPedidos.infra.persistence.pedido.PedidoRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 public class RepositorioDePedidoJPA implements
         AtualizarPedidoInterface,
@@ -42,6 +43,14 @@ public class RepositorioDePedidoJPA implements
     public Pedido consultarPedido(Long id) {
         PedidoEntity pedido = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Pedido não encontrado"));
         return  pedidoMapper.toDomain(pedido);
+    }
+
+    @Override
+    public List<Pedido> consultarTodosPedidos() {
+        List<PedidoEntity> pedidoEntities = repository.findAll();
+        return pedidoEntities.stream()
+                .map(pedidoMapper::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override

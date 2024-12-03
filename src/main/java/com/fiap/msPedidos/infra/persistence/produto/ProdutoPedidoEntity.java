@@ -9,7 +9,6 @@ import lombok.Setter;
 
 @Embeddable
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProdutoPedidoEntity {
